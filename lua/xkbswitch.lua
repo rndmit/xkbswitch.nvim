@@ -65,7 +65,13 @@ if user_us_layout_variation == nil then
 	)
 end
 
-function M.setup()
+M.config = {
+	user_us_layout_variation = "us",
+}
+
+function M.setup(opts)
+	opts = opts or {}
+	M.config = vim.tbl_deep_extend("force", M.config, opts)
 	-- When leaving Insert Mode:
 	-- 1. Save the current layout
 	-- 2. Switch to the US layout
@@ -74,7 +80,7 @@ function M.setup()
 		callback = function()
 			vim.schedule(function()
 				saved_layout = get_current_layout()
-				vim.fn.libcall(xkb_switch_lib, "Xkb_Switch_setXkbLayout", user_us_layout_variation)
+				vim.fn.libcall(xkb_switch_lib, "Xkb_Switch_setXkbLayout", M.config.user_us_layout_variation)
 			end)
 		end,
 	})
@@ -95,7 +101,7 @@ function M.setup()
 					or current_mode == "V"
 					or current_mode == "^V"
 				then
-					vim.fn.libcall(xkb_switch_lib, "Xkb_Switch_setXkbLayout", user_us_layout_variation)
+					vim.fn.libcall(xkb_switch_lib, "Xkb_Switch_setXkbLayout", M.config.user_us_layout_variation)
 				end
 			end)
 		end,
